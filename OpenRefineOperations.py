@@ -5,7 +5,7 @@ from pprint import pprint
 from OR_Client_Library.openrefine_client.google.refine import refine
 
 
-def list_projects():
+def list_objects():
     # list projects
     return refine.Refine(refine.RefineServer()).list_projects()
 
@@ -35,6 +35,18 @@ def project_name(project_id):
     # project_name
     return refine.RefineProject(refine.RefineServer(),project_id).project_name()
 
+'''
+Niko
+'''
+def list_history(project_id):
+    return refine.RefineProject(refine.RefineServer(),project_id).list_history()
+
+def undo_redo(project_id,lastDone_id):
+    return refine.RefineProject(refine.RefineServer(),project_id).undo_project(lastDone_id)
+
+"""
+Niko
+"""
 
 def project_url(project_id):
     # project_url
@@ -280,17 +292,33 @@ def returnRetro_Description(project_id,op_index):
 
 
 def main():
-    userinputpath=input_path_convenient('please input CSV name:')
-    userinputname=raw_input('please input new project name:')
+    '''
+    input the history entry id
+    :return:
+    '''
+    print('original one///////////////')
+    pprint(list_history(1981993338999))
+    pprint(undo_redo(1981993338999,1553277442292))
+    print('after undo,........................')
+    pprint(list_history(1981993338999))
+    print('list      process/////////////////')
+    '''
+    when the lastDone_id==0
+    undo all
+    '''
+
+    # compute_clusters('2130630377229', 'event', 'knn','levenshtein',params='{"radius":2, "blocking-ngram-size":4}')
+    # userinputpath=input_path_convenient('please input CSV name:')
+    # userinputname=raw_input('please input new project name:')
     # userinputjson=input_path_convenient('please input OR_JSON name:')
-    project_id=create_project(userinputpath,userinputname)
-    print(project_id)
+    # project_id=create_project(userinputpath,userinputname)
+    # print(project_id)
     # test get_cell_value
     # how many changes from retrospective provenance: do_json
-    split_column(project_id,'sponsor', separator=',',remove_original_column=True)
-    print(zip(get_split_cell_value(project_id,20)[0],get_split_cell_value(project_id,20)[1]))
-    retro_desc=returnRetro_Description(project_id,0)
-    print(retro_desc)
+    # split_column(project_id,'sponsor', separator=',',remove_original_column=True)
+    # print(zip(get_split_cell_value(project_id,20)[0],get_split_cell_value(project_id,20)[1]))
+    # retro_desc=returnRetro_Description(project_id,0)
+    # print(retro_desc)
     # test apply json file
     # apply_operations(project_id,userinputjson)
 

@@ -634,3 +634,37 @@ class RefineProject:
             }
         return self.do_json('reconcile', {
             'columnName': column, 'config': json.dumps(reconciliation_config)})
+
+    """
+    Add Capabilities for Undo Redo using OpenRefine client
+    Author: Parulian, Nikolaus
+    """
+    def list_history(self):
+        """
+        :return:
+        """
+        return self.server.urlopen_json("get-history", project_id=self.project_id)
+
+    def undo_project(self,lastDone_id):
+        """
+        :param lastDone_id: the history id
+        :return:
+        """
+
+        json_response = self.server.urlopen_json("undo-redo",project_id=self.project_id,params={ "lastDoneID":lastDone_id},
+                                                 data={"engine": self.engine.as_json()})
+        if json_response["code"] != "pending":
+            # history ID not found or error
+            return False
+        # check if history move
+        history_list = self.server.urlopen_json("get-history", project_id=self.project_id)
+        past_operations = history_list["past"]
+        if past_operations[-1]["id"] == lastDone_id:
+            # check if the history change
+            return True
+        return False
+
+    """
+    End Feature
+    """
+
